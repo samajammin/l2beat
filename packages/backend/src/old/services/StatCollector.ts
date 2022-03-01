@@ -30,6 +30,7 @@ export class StatCollector {
     endDate: SimpleDate
   ): Promise<Stats> {
     const dates = await this.projectDates.getDateRanges(projects, endDate)
+    console.log(dates[0])
     const prices = await this.priceService.getPrices(tokenList, dates)
 
     const tvlEntries: TVLAnalysis[] = []
