@@ -7,6 +7,7 @@ import {
   UnixTime,
 } from '@l2beat/common'
 import { expect, mockFn } from 'earljs'
+import sinon from 'sinon'
 
 import { PriceUpdater } from '../../src/core/PriceUpdater'
 import { Token } from '../../src/model'
@@ -170,9 +171,13 @@ describe(PriceUpdater.name, () => {
         Logger.SILENT
       )
 
-      const result = await priceUpdater.syncTokenPriceFromDB(tokens[0])
+      const spy = sinon.spy()
 
-      expect(result).toEqual([
+      priceUpdater.onSyncedPrices(spy)
+
+      await priceUpdater.syncTokenPriceFromDB(tokens[0])
+
+      sinon.assert.calledWith(spy,[
         {
           timestamp: now.add(-2, 'hours'),
           priceUsd: 100,
@@ -184,6 +189,8 @@ describe(PriceUpdater.name, () => {
           coingeckoId: tokens[0].coingeckoId,
         },
       ])
+
+      
     })
   })
 })
